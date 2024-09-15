@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facebook-like Chatbox</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+  <style>
+    .chat {
+      height: 450px;
+      overflow-y: auto;
+      padding: 10px;
+      scrollbar-width: none;
+      background-color: #CCE5FF;
+    }
+    /* Hide the scrollbar in WebKit-based browsers (e.g., Chrome, Safari) */
+    .chat::-webkit-scrollbar {
+      width: 0.5em; /* Adjust the width as needed */
+    }
+
+    .chat::-webkit-scrollbar-thumb {
+      background-color: transparent; /* Hide the scrollbar thumb */
+    }
+
+    .chat::-moz-scrollbar {
+      width: 0.5em; /* Adjust the width as needed for Firefox */
+    }
+
+    .chat::-moz-scrollbar-thumb {
+      background-color: transparent; /* 007bff
+      Hide the scrollbar thumb in Firefox */
+    }
+    .message {
+      padding: 10px;
+      margin-bottom: 5px;
+      border-radius: 8px;
+      max-width: 70%;
+    }
+
+    .my-message {
+      background-color: #6482AD;
+      color: white;
+      align-self: flex-end;
+    }
+
+    .other-message {
+      background-color: #f1f1f1;
+      color: black;
+      align-self: flex-start;
+    }
+
+    .timestamp {
+      font-size: 0.8em;
+      opacity: 0.7;
+      margin-left: 10px;
+    }
+    .close-btn{
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 15px;
+      height: 20px;
+      font-size: 30px;
+      transform: rotate(90deg);
+      line-height: 15px;
+      border-radius: 15px;
+      cursor: pointer;
+    }
+    .card-header {
+      position: relative;
+      background-color: white;
+      color:black;
+      min-height: 85px;
+      padding: 15px;
+      font-weight: bolder;
+    }   
+    h4{
+      margin-left: 80px;
+      margin-top: 13px;
+    }
+    .image {
+      width: 60px; /* Adjust the width and height to set the size of the circular container */
+      height: 60px;
+      border-radius: 50%; /* Create a circular container */
+      background-color: beige;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      display: inline-flex; /* Add a box shadow to the circular container */
+      float: left; /* Float the avatar container to the left */
+      margin-top: 2px ;/* Add some spacing between the image and the text */
+      overflow: hidden; /* Clip the image to the circular shape */
+    }
+    .avatar1 {
+      margin: auto;
+      width: 80%; /* Make sure the image fills the circular container */
+      height: 75%;
+    }
+    .text-suggestions {
+      margin-top: -50px;
+    }
+    .text-suggestion1 {
+      display: inline-block;
+      border-bottom-right-radius: 15px;
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+      border-bottom-left-radius: 3px;
+      margin: 5px;
+      padding: 15px 20px;
+      background-color: rgba(255, 255, 255);
+      box-shadow:  0 2px 6px rgba(0, 0, 0, 0.2);
+      color: black;
+      cursor: pointer;
+    }
+    .userText {
+      max-width: 200px;
+      color: black;
+      font-family: monospace;
+      font-size: 17px;
+      background-color: #6482AD;
+      color: white;
+      float: right;
+      line-height: 30px;
+      padding: 10px;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+      border-bottom-left-radius: 8px;
+      clear: both;
+    }
+    .bot-reply {
+      max-width: 200px;
+      color: black;
+      font-family: monospace;
+      font-size: 17px;
+      background-color: #6482AD;
+      color: white;
+      float: left;
+      line-height: 30px;
+      padding: 10px;
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+      border-bottom-left-radius: 8px;
+      clear: both;
+    }
+    .text-suggestion2 {
+      display: inline-block;
+      border-bottom-right-radius: 15px;
+      border-top-left-radius: 3px;
+      border-top-right-radius: 15px;
+      border-bottom-left-radius: 15px;
+      margin: 5px;
+      padding: 15px 20px;
+      background-color: rgba(255, 255, 255);
+      box-shadow:  0 2px 6px rgba(0, 0, 0, 0.2);
+      color: black;
+      cursor: pointer;
+    }
+    .text-suggestions2 {
+      margin-top: -40px;
+      margin-left: 30px;
+    }
+    .text-suggestion {
+      display: inline-block;
+      border-radius: 13px;
+      margin: 5px;
+      padding: 5px 20px;
+      background-color: rgba(255, 255, 255);
+      box-shadow:  0 2px 6px rgba(0, 0, 0, 0.2);
+      color: black;
+      cursor: pointer;
+    }
+    .topic {
+      margin-left: 3px; /* Adjust this value as needed */
+      vertical-align: middle;
+    }
+
+    /* Style for the avatar images */
+    .avtr {
+      width: 20px; /* Adjust this value as needed */
+      height: 20px; /* Adjust this value as needed */
+      vertical-align: middle;
+    }
+    .text-suggestion:hover {
+      background-color: rgb(10, 10, 10);
+    }
+
+    .userInput {
+      width: 520px;
+      min-height: 42px;
+      display: grid;
+      grid-template-columns: 70% 30%;
+      margin: 8px 16px;
+      border-radius: 32px;
+      background: linear-gradient(#ececee 50%, #1c1f46 50%);
+      box-shadow: inset 0 1px 0 #777;
+    }
+    #textInput {
+      outline: none;
+      font-size: 16px;
+      background: #ececee;
+      color: #333;
+      border-radius: 32px 0 32px 32px;
+      padding: 0 16px;
+      border-right: none;
+    }
+    #sendButton {
+      outline: none;
+      font-size: 16px;
+      color: #eee;
+      background: #1c1f46;
+      border: none;
+      border-radius: 32px;
+      transition-duration: 0.2s;
+    }
+    #sendButton:active{
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-1">
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <div class="card">
+          <div class="card-header text-white" style="background-color: #55679C;">
+            <div class="close-btn" onclick="closePopupForm()">&times;</div>
+            <div class="image">
+                <img src="{{ url_for('static', filename='chatbot1.png') }}" alt="" class="avatar1"> 
+            </div>
+          <h4>ChatBot</h4>
+        </div>
+      </div>
+      <div class="card-body"><!-- Chat messages will be dynamically added here -->
+        <div class="chat">
+          <p>
+            <span>Hi! I'm ChatBot</span>
+          </p>
+          <div class="boxed">  
+            <div class="text-suggestions p-5" id="suggestions">
+              <span class="text-suggestion1">
+                <img src="{{ url_for('static', filename='o1.png') }}" alt="" class="avtr">
+                 <!-- ... -->
+                <span class="bot1">Hi! I'm a Bot. Let me know if you have any questions regarding our tool!</span>
+              </span>
+             <span class="text-suggestion2">Select the topic or write your question below.</span>
+            </div>
+            <div class="text-suggestions2" id="more-suggestions">                             
+              <span class="text-suggestion">
+                <img src="{{ url_for('static', filename='o2.png') }}" alt="" class="avtr">
+                 <!-- ... -->
+                <span class="topic">Getting started</span>
+              </span>
+              <span class="text-suggestion">
+                <img src="{{ url_for('static', filename='o3.png') }}" alt="" class="avtr">
+                 <!-- ... -->
+                <span class="topic">Contact Sales</span>
+              </span>
+              <span class="text-suggestion">
+                <img src="{{ url_for('static', filename='o4.png') }}" alt="" class="avtr">
+                <span class="topic">Features</span>
+              </span>
+              <span class="text-suggestion">
+                <img src="{{ url_for('static', filename='o5.png') }}" alt="" class="avtr">
+                <span class="topic">Pricing</span>
+              </span>
+              <span class="text-suggestion">
+                <img src="{{ url_for('static', filename='o6.png') }}" alt="" class="avtr">
+                <span class="topic">Contact Support</span>
+              </span>
+            </div>
+          </div>
+          <div class="chatbox">
+            <p class="botText">
+              <span></span>
+            </p>
+            <div class="box"></div>
+
+          </div>
+        </div>
+        <div class="card-footer" style="background-color: #7C93C3; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;">
+          <div class="input-group">
+            <div class="userInput">
+              <input id="textInput" type="text" name="msg" class="form-control" placeholder="Type your message...">
+              <button id="sendButton" type="button">Send<i class="fa fa-paper-plane" style="padding-left: 16px;"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <script src="chatbox.js"></script>
+
+  <script>
+    function getBotResponse() {
+      var rawText = $("#textInput").val();
+      var userHtml = '<p class="userText">' + rawText + '</p>';
+      $("#textInput").val("");
+      $(".chat .box").append(userHtml);
+      $(".chat")[0].scrollTop = $(".chat")[0].scrollHeight;
+
+      $.get("/get", { msg: rawText }).done(function (data) {
+          var botHtml = '<p class="botText"><span class="bot-reply">' + data + '</span></p>';
+          $(".chat .box").append(botHtml);
+          $(".chat")[0].scrollTop = $(".chat")[0].scrollHeight;
+      });
+    }
+    $("#textInput").keypress(function (e) {
+      if (e.which == 13) {
+          getBotResponse();
+      }
+    });
+    $("#sendButton").click(function () {
+      getBotResponse();
+    })
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
